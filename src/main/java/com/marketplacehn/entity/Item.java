@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,6 +23,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * Entity used to represent Item table.
+ * @author Igor A. Zelaya
+ * @version 1.0.0
+ */
 @Entity
 @Table(name = "item", schema = "marketplace")
 @Getter
@@ -60,5 +67,12 @@ public class Item {
         cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE }
     )
     private Set<Bid> itemBids;
+
+    @ElementCollection
+    @CollectionTable(name = "item_photos",
+        joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "photo_url", nullable = false)
+    private Set<String> itemPhotos;
 
 }

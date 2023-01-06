@@ -17,6 +17,12 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Set;
 
+
+/**
+ * Entity used to represent User table.
+ * @author Igor A. Zelaya
+ * @version 1.0.0
+ */
 @Entity
 @Table(name = "users", schema = "marketplace")
 @Getter

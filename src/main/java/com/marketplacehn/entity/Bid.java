@@ -15,6 +15,11 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Entity used to represent Bid table.
+ * @author Igor A. Zelaya
+ * @verion 1.0.0
+ */
 @Entity
 @Table(name = "bids", schema = "marketplace")
 @Getter
