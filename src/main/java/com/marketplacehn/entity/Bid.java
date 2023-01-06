@@ -1,6 +1,7 @@
 package com.marketplacehn.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.CascadeType;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "bids", schema = "marketplace")
 @Getter
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class Bid {
 
     @Id
