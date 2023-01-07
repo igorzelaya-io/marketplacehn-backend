@@ -6,7 +6,6 @@ spring:
       hibernate:
         jdbc:
           time_zone : UTC
-  #      database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
   datasource:
     platform : postgres
     url : jdbc:postgresql://localhost:5432/hn_marketplace
