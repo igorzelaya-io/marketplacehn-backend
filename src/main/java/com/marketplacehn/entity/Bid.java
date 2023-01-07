@@ -3,6 +3,7 @@ package com.marketplacehn.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,6 +36,7 @@ public class Bid {
     private BigDecimal bidValue;
 
     @Column(name = "bid_date", nullable = false)
+    @Setter
     private LocalDateTime bidDate;
 
     @ManyToOne(fetch = FetchType.EAGER,

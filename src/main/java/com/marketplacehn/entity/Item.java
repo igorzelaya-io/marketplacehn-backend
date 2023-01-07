@@ -5,6 +5,7 @@ import com.marketplacehn.entity.enums.ModelStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -46,6 +47,7 @@ public class Item {
     private BigDecimal itemCurrentBid;
 
     @Column(name = "item_post_date", nullable = false)
+    @Setter
     private LocalDateTime itemPostDate;
 
     @Column(name = "item_delivery_address", length = 126)
