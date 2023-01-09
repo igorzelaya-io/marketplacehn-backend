@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Entity used to represent Bid table.
@@ -30,6 +31,7 @@ public class Bid {
 
     @Id
     @Column(name = "bid_id", length = 64)
+    @Setter
     private String bidId;
 
     @Column(name = "bidValue", nullable = false)
@@ -51,4 +53,14 @@ public class Bid {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    /**
+     * Prepare Bid's fields to persist.
+     * @return Bid
+     */
+    public static Bid prepareToPersist(Bid bid){
+        return bid.toBuilder()
+                .bidId(UUID.randomUUID().toString())
+                .bidDate(LocalDateTime.now())
+                .build();
+    }
 }
