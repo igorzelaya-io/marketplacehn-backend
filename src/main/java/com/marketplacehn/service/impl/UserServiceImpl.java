@@ -6,7 +6,6 @@ import com.marketplacehn.repository.UserRepository;
 import com.marketplacehn.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityNotFoundException;
 
 @Service
@@ -30,11 +29,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(final String userId) {
+        User user = findUserById(userId);
+        user.setUserStatus(ModelStatus.INACTIVE);
         userRepo.deleteById(userId);
     }
 
     @Override
     public User saveUser(User user) {
+        User.prepareToPersist(user);
         return userRepo.save(user);
     }
 }

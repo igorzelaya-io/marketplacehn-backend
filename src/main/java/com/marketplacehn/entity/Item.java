@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Entity used to represent Item table.
@@ -32,7 +33,7 @@ import java.util.Set;
 @Entity
 @Table(name = "item", schema = "marketplace")
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 public class Item {
 
@@ -47,7 +48,6 @@ public class Item {
     private BigDecimal itemCurrentBid;
 
     @Column(name = "item_post_date", nullable = false)
-    @Setter
     private LocalDateTime itemPostDate;
 
     @Column(name = "item_delivery_address", length = 126)
@@ -55,6 +55,7 @@ public class Item {
 
     @Column(name = "item_status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
+    @Setter
     private ModelStatus itemStatus;
 
     @Column(name = "item_sell_type", nullable = false)
@@ -76,5 +77,19 @@ public class Item {
     )
     @Column(name = "photo_url", nullable = false)
     private Set<String> itemPhotos;
+
+    /**
+     * Prepare Item's fields to persist.
+     * @param item Item
+     * @return Item
+     */
+    public static Item prepareToPersist(Item item){
+        return item.toBuilder()
+                .itemId(UUID.randomUUID().toString())
+                .itemPostDate(LocalDateTime.now())
+                .itemStatus(ModelStatus.ACTIVE)
+                .itemCurrentBid(BigDecimal.ZERO)
+                .build();
+    }
 
 }

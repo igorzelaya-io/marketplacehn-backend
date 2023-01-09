@@ -4,6 +4,7 @@ package com.marketplacehn.service.impl;
 import com.marketplacehn.entity.Bid;
 import com.marketplacehn.repository.BidRepository;
 import com.marketplacehn.service.BidService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class BidServiceImpl implements BidService {
 
+    @NonNull
     private final BidRepository bidRepository;
 
     @Override
@@ -29,7 +31,7 @@ public class BidServiceImpl implements BidService {
 
     @Override
     public Bid saveBid(Bid bid) {
-        bid.setBidDate(LocalDateTime.now());
+        Bid.prepareToPersist(bid);
         return bidRepository.save(bid);
     }
 }

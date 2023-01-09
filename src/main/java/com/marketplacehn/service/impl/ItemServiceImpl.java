@@ -1,6 +1,7 @@
 package com.marketplacehn.service.impl;
 
 import com.marketplacehn.entity.Item;
+import com.marketplacehn.entity.enums.ModelStatus;
 import com.marketplacehn.repository.ItemRepository;
 import com.marketplacehn.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  * Service Implementation for business logic regarding Item entity.
- * @author Igor A. Zelaya (igorz@marketplacehn.com)
+ * @author Igor A. Zelaya
  * @verion 1.0.0
  */
 @Service
@@ -28,12 +29,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item saveItem(Item item) {
-        item.setItemPostDate(LocalDateTime.now());
+        Item.prepareToPersist(item);
+        //if(!item.getItemPhotos().isEmpty() || item.getItemPhotos() != null)
         return itemRepository.save(item);
     }
 
     @Override
     public void deleteItemById(final String itemId) {
-        itemRepository.deleteById(itemId);
+        Item item = findItemById(itemId);
+        item.setItemStatus(ModelStatus.INACTIVE);
+        itemRepository.save(item);
     }
 }
