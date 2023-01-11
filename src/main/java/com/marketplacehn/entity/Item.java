@@ -66,9 +66,7 @@ public class Item {
     @JoinColumn(name = "user_id")
     private User itemOwner;
 
-    @OneToMany(mappedBy = "item",
-        cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE }
-    )
+    @OneToMany(mappedBy = "item")
     private Set<Bid> itemBids;
 
     @ElementCollection

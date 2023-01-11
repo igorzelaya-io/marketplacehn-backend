@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,10 +49,9 @@ public class Bid {
     @JoinColumn(name = "user_id")
     private User userBid;
 
-    @ManyToOne(fetch = FetchType.EAGER,
-        cascade = { CascadeType.REFRESH, CascadeType.MERGE }
-    )
-    @JoinColumn(name = "item_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "item_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Item item;
 
     /**

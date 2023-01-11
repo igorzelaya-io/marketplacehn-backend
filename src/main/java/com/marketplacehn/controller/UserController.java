@@ -53,8 +53,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<? extends Response<?>> deleteUserById(@PathVariable final String userId){
-        BaseResponse<User> response = new BaseResponse<>();
+    public ResponseEntity<? extends Response<Void>> deleteUserById(@PathVariable final String userId){
+        BaseResponse<Void> response = new BaseResponse<>();
         userService.deleteUserById(userId);
         return response.buildResponseEntity(HttpStatus.OK, "User deleted successfully", null);
     }
