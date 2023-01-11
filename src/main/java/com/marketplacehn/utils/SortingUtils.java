@@ -1,6 +1,5 @@
 package com.marketplacehn.utils;
 
-import lombok.Getter;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +8,10 @@ import java.util.List;
 @Component
 public class SortingUtils {
 
-    @Getter
     private List<Sort.Order> sortingParams;
 
     //sortinArgs = {"field, direction", "field, direction"}
-    public List<Sort.Order> sortType(final String[] sortingArgs){
+    public List<Sort.Order> getSortingOrder(final String[] sortingArgs){
 
         if(sortingArgs.length > 1){
             for(final String sortOrder : sortingArgs){

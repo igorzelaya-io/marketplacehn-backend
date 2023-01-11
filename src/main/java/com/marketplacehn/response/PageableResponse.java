@@ -129,11 +129,16 @@ public class PageableResponse<T> implements IPageResponse<T>, Response<T>{
 
     public ResponseEntity<? extends Response<T>> buildResponseEntity
             (final HttpStatus httpStatus, final String message,
-             final List<T> payloadPage){
+             final int pageSize, final int numberOfElements,
+             final int totalPages, final int pageNumber, final List<T> payloadPage){
         setPayloadPage(payloadPage);
         setHttpStatus(httpStatus.value());
         setTimestamp(LocalDateTime.now());
         setMessage(message);
+        setPageSize(pageSize);
+        setNumberOfElements(numberOfElements);
+        setTotalPages(totalPages);
+        setPageNumber(pageNumber);
         return new ResponseEntity<>(this, httpStatus);
     }
 }
