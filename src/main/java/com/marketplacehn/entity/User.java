@@ -49,10 +49,10 @@ public class User {
     private String userPhone;
 
     @Column(name = "user_address", length = 256)
-    private String user_address;
+    private String userAddress;
 
     @Column(name = "user_photo_url", length = 256)
-    private String user_photo_url;
+    private String userPhotoUrl;
 
     @Column(name = "user_balance", nullable = false)
     private BigDecimal userBalance;
@@ -61,18 +61,6 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     @Setter
     private ModelStatus userStatus;
-
-    @OneToMany(mappedBy = "itemOwner",
-            cascade = { CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE},
-            fetch = FetchType.LAZY
-    )
-    private Set<Item> items;
-
-    @OneToMany(mappedBy = "userBid",
-            cascade = { CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.PERSIST},
-            fetch = FetchType.LAZY
-    )
-    private Set<Bid> userBids;
 
     /**
      * Prepare incoming dto to persist in DB.

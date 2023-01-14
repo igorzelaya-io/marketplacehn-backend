@@ -1,6 +1,7 @@
 package com.marketplacehn.controller;
 
 import com.marketplacehn.entity.Bid;
+import com.marketplacehn.request.BidPostingDto;
 import com.marketplacehn.response.BaseResponse;
 import com.marketplacehn.response.PageableResponse;
 import com.marketplacehn.response.Response;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Rest Controller for Bid entity.
@@ -34,6 +33,36 @@ public class BidController {
 
     @NonNull
     private final BidService bidService;
+
+    @GetMapping("bids/{bidId}")
+    public ResponseEntity<? extends Response<Bid>> findBidById(@PathVariable("bidId") final String bidId) {
+        BaseResponse<Bid> response = new BaseResponse<>();
+        final Bid bid = bidService.findBidById(bidId);
+        return response.buildResponseEntity(HttpStatus.OK, "Bid was found.", bid);
+    }
+
+    @PostMapping("/bids")
+    public ResponseEntity<? extends Response<Bid>> postBid(@RequestBody BidPostingDto bidPostingDto) {
+        BaseResponse<Bid> response = new BaseResponse<>();
+        final Bid createdBid = bidService.saveBid(bidPostingDto);
+        return response.buildResponseEntity(HttpStatus.CREATED, "Bid posted successfully.", createdBid);
+    }
+
+    @PutMapping("/bids/{bidId}")
+    public ResponseEntity<? extends Response<Bid>> updateBid(@PathVariable final String bidId,
+                                                             @RequestBody Bid bid) {
+        BaseResponse<Bid> response = new BaseResponse<>();
+        final Bid updatedBid = bidService.updateBid(bidId, bid);
+        return response.buildResponseEntity(HttpStatus.OK, "Updated Bid", updatedBid);
+    }
+
+    @DeleteMapping("/items/{itemId}/bids/{bidId}")
+    public ResponseEntity<? extends Response<String>> deleteBidById(@PathVariable final String itemId,
+                                                                    @PathVariable final String bidId) {
+        BaseResponse<String> response = new BaseResponse<>();
+        bidService.deleteBidById(itemId, bidId);
+        return response.buildResponseEntity(HttpStatus.OK, "Bid was deleted successfully.", bidId);
+    }
 
     @GetMapping("/items/{itemId}/bids")
     public ResponseEntity<? extends Response<Bid>> getItemsBids(@PathVariable String itemId,
@@ -52,7 +81,6 @@ public class BidController {
 
     }
 
-
     @GetMapping("/users/{userId}/bids")
     public ResponseEntity<? extends Response<Bid>> getUserBids(@PathVariable final String userId,
                                @RequestParam(required = false, defaultValue = "0") final int page,
@@ -68,29 +96,5 @@ public class BidController {
                                 bidsPage.getTotalPages(), bidsPage.getNumber(), bidsPage.getContent());
     }
 
-
-    @GetMapping("bids/{bidId}")
-    public ResponseEntity<? extends Response<Bid>> findBidById(@PathVariable("bidId") final String bidId) {
-        BaseResponse<Bid> response = new BaseResponse<>();
-        final Bid bid = bidService.findBidById(bidId);
-        return response.buildResponseEntity(HttpStatus.OK, "Bid was found.", bid);
-    }
-
-    @PostMapping("/bids")
-    public ResponseEntity<? extends Response<Bid>> postBid(@PathVariable final String itemId,
-                                                                 @RequestBody Bid bid) {
-        BaseResponse<Bid> response = new BaseResponse<>();
-        final Bid createdBid = bidService.saveBid(itemId, bid);
-        return response.buildResponseEntity(HttpStatus.OK, "Bid created successfully.", createdBid);
-    }
-
-    @PutMapping("/bids/{bidId}")
-    public ResponseEntity<? extends Response<Bid>> updateBid(@PathVariable final String bidId,
-                                                             @RequestBody Bid bid) {
-        BaseResponse<Bid> response = new BaseResponse<>();
-
-
-
-    }
 
 }

@@ -10,7 +10,7 @@ public class SortingUtils {
 
     private List<Sort.Order> sortingParams;
 
-    //sortinArgs = {"field, direction", "field, direction"}
+    //sortingArgs = {"field, direction", "field, direction"}
     public List<Sort.Order> getSortingOrder(final String[] sortingArgs){
 
         if(sortingArgs.length > 1){
