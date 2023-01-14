@@ -3,12 +3,11 @@ package com.marketplacehn.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @JsonSerialize
 @NoArgsConstructor
-public class BaseResponse<T> implements Response<T>{
+public class BaseResponse<T> implements Response<T> {
 
     @JsonProperty
     private T payload;
@@ -22,13 +21,14 @@ public class BaseResponse<T> implements Response<T>{
     @JsonProperty
     private LocalDateTime timestamp;
 
+
     @Override
     public T getPayload() {
         return payload;
     }
 
     @Override
-    public void setPayload(final T payload) {
+    public void setPayload(T payload) {
         this.payload = payload;
     }
 
@@ -38,18 +38,8 @@ public class BaseResponse<T> implements Response<T>{
     }
 
     @Override
-    public void setHttpStatus(final int statusCode) {
-        this.httpStatus = statusCode;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    @Override
-    public void setMessage(final String message) {
-        this.message = message;
+    public void setHttpStatus(int httpStatus) {
+        this.httpStatus = httpStatus;
     }
 
     @Override
@@ -58,7 +48,18 @@ public class BaseResponse<T> implements Response<T>{
     }
 
     @Override
-    public void setTimestamp(final LocalDateTime timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 }

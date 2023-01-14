@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,28 +30,37 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class Bid {
 
+    public Bid(){
+        this.bidId = UUID.randomUUID().toString();
+        this.bidDate = LocalDateTime.now();
+    }
+
     @Id
     @Column(name = "bid_id", length = 64)
-    @Setter
     private String bidId;
 
     @Column(name = "bidValue", nullable = false)
+    @Setter
     private BigDecimal bidValue;
 
     @Column(name = "bid_date", nullable = false)
     @Setter
     private LocalDateTime bidDate;
 
-    @ManyToOne(fetch = FetchType.EAGER,
-        cascade = { CascadeType.MERGE, CascadeType.REFRESH }
-    )
-    @JoinColumn(name = "user_id")
+    @Column(name = "updated_at")
+    @Setter
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Setter
     private User userBid;
 
-    @ManyToOne(fetch = FetchType.EAGER,
-        cascade = { CascadeType.REFRESH, CascadeType.MERGE }
-    )
-    @JoinColumn(name = "item_id")
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "item_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Setter
     private Item item;
 
     /**
