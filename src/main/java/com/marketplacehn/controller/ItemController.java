@@ -2,10 +2,12 @@ package com.marketplacehn.controller;
 
 import com.marketplacehn.entity.Item;
 import com.marketplacehn.response.BaseResponse;
+import com.marketplacehn.response.PageableResponse;
 import com.marketplacehn.response.Response;
 import com.marketplacehn.service.ItemService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -23,18 +26,31 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0.0
  */
 @RestController
-@RequestMapping("/api/v1/items")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class ItemController {
 
     @NonNull
     private final ItemService itemService;
 
-    @GetMapping("/{itemId}")
+    @GetMapping("/items/{itemId}")
     public ResponseEntity<? extends Response<Item>> findItemById(@PathVariable("itemId") final String itemId) {
         BaseResponse<Item> response = new BaseResponse<>();
         Item retrievedItem = itemService.findItemById(itemId);
         return response.buildResponseEntity(HttpStatus.OK, "Item retrieved.", retrievedItem);
+    }
+
+    @GetMapping("/users/{userId}/items")
+    public ResponseEntity<? extends Response<Item>> getUserItems(@PathVariable String userId,
+                                                                 @RequestParam(required = false, defaultValue="0") final int page,
+                                                                 @RequestParam(required = false, defaultValue="10") final int size,
+                                                                 @RequestParam(required = false, defaultValue="bidValue, desc") final String sort[]) {
+        PageableResponse<Item> response = new PageableResponse<>();
+        Page<Item> itemPage = itemService.findAllItemsByUserId(userId, page, size, sort);
+        return response
+                .buildResponseEntity(HttpStatus.OK, "Page retrieved successfully", itemPage.getSize(),
+                        itemPage.getNumberOfElements(), itemPage.getTotalPages(),
+                                itemPage.getNumber(), itemPage.getContent());
     }
 
     @PostMapping
@@ -44,7 +60,7 @@ public class ItemController {
         return response.buildResponseEntity(HttpStatus.OK, "Item upserted successfully.", savedItem);
     }
 
-    @DeleteMapping("/{itemId}")
+    @DeleteMapping("/items/{itemId}")
     public ResponseEntity<? extends Response<String>> deleteItemById(@PathVariable("itemId") final String itemId) {
         BaseResponse<String> response = new BaseResponse<>();
         itemService.deleteItemById(itemId);

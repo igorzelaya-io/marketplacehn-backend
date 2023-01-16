@@ -1,6 +1,7 @@
 package com.marketplacehn.service;
 
 import com.marketplacehn.entity.Item;
+import org.springframework.data.domain.Page;
 
 public interface ItemService {
 
@@ -9,5 +10,7 @@ public interface ItemService {
     Item saveItem(Item item);
 
     void deleteItemById(String itemId);
+
+    Page<Item> findAllItemsByUserId(String userId, int page, int size, String[] sort);
 
 }
