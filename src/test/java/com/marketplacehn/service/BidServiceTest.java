@@ -2,6 +2,7 @@ package com.marketplacehn.service;
 
 import com.marketplacehn.entity.Bid;
 import com.marketplacehn.repository.BidRepository;
+import com.marketplacehn.repository.ItemRepository;
 import com.marketplacehn.service.impl.BidServiceImpl;
 import com.marketplacehn.utils.SortingUtils;
 import org.junit.jupiter.api.Test;
@@ -28,12 +29,14 @@ class BidServiceTest {
     @Mock
     private BidRepository bidRepository;
     @Mock
+    private ItemRepository itemRepository;
+    @Mock
     private SortingUtils sortingUtils;
 
     @Test
     void findItemBids() {
         //given
-        Bid itemBid = new Bid();
+        Bid itemBid = mock(Bid.class);
         String bidId = itemBid.getBidId();
         int page = 0;
         int size = 10;
