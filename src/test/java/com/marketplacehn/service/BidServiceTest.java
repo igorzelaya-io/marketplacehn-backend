@@ -1,6 +1,7 @@
 package com.marketplacehn.service;
 
 import com.marketplacehn.entity.Bid;
+import com.marketplacehn.entity.User;
 import com.marketplacehn.repository.BidRepository;
 import com.marketplacehn.repository.ItemRepository;
 import com.marketplacehn.service.impl.BidServiceImpl;
@@ -42,11 +43,14 @@ class BidServiceTest {
         int size = 10;
         String[] sort = {"bidValue,desc"};
 
-        //when
-        List<Sort.Order> sortingOrder = sortingUtils.getSortingOrder(sort);
-        when(sortingUtils.getSortingOrder(sort)).thenReturn(sortingOrder);
+        List<Sort.Order> sortingOrder = new ArrayList<>();
+        sortingOrder.add(new Sort.Order(Sort.Direction.DESC, "bidValue"));
 
         List<Bid> mockBids = createMockBids();
+
+        //when
+        when(sortingUtils.getSortingOrder(sort)).thenReturn(sortingOrder);
+
         when(bidRepository.findByItem_ItemId(
                 eq(bidId),
                 eq(PageRequest.of(page, size, Sort.by(sortingOrder)))
@@ -56,6 +60,34 @@ class BidServiceTest {
 
         //then
         assertEquals(mockBids.size(), itemBids.getTotalElements());
+    }
+
+    @Test
+    void findUserBids() {
+        //given
+        User user = mock(User.class);
+        String userId = user.getUserId();
+        int page = 0;
+        int size = 10;
+        String[] sort = {"bidValue,desc"};
+
+        List<Sort.Order> sortingOrder = new ArrayList<>();
+        sortingOrder.add(new Sort.Order(Sort.Direction.DESC, "bidValue"));
+
+        List<Bid> mockBids = createMockBids();
+
+        //when
+        when(sortingUtils.getSortingOrder(sort)).thenReturn(sortingOrder);
+
+        when(bidRepository.findByUserBid_UserId(
+                eq(userId),
+                eq(PageRequest.of(page, size, Sort.by(sortingOrder)))
+        )).thenReturn(mockBids);
+
+        Page<Bid> userBids = underTest.findUserBids(userId, page, size, sort);
+
+        //then
+        assertEquals(mockBids.size(), userBids.getTotalElements());
     }
 
     private List<Bid> createMockBids() {
@@ -70,4 +102,5 @@ class BidServiceTest {
 
         return mockBids;
     }
+
 }
