@@ -35,7 +35,7 @@ class BidServiceTest {
     private SortingUtils sortingUtils;
 
     @Test
-    void findItemBids() {
+    void shouldFindAllItemBids() {
         //given
         Bid itemBid = mock(Bid.class);
         String bidId = itemBid.getBidId();
@@ -63,7 +63,7 @@ class BidServiceTest {
     }
 
     @Test
-    void findUserBids() {
+    void shouldFindAllUserBids() {
         //given
         User user = mock(User.class);
         String userId = user.getUserId();
