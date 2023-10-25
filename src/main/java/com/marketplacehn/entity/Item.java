@@ -81,6 +81,11 @@ public class Item {
     @Column(name = "photo_url")
     private Set<String> itemPhotos;
 
+    public Item(String itemId) {
+        this.itemId = itemId;
+        itemStatus = ModelStatus.ACTIVE;
+    }
+
     /**
      * Prepare Item's fields to persist.
      * @param item Item

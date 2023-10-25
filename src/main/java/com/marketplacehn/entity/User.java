@@ -62,6 +62,11 @@ public class User {
     @Setter
     private ModelStatus userStatus;
 
+    public User(String userId) {
+        this.userId = userId;
+        userStatus = ModelStatus.ACTIVE;
+    }
+
     /**
      * Prepare incoming dto to persist in DB.
      * @param user User
