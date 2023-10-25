@@ -1,5 +1,6 @@
 spring:
-  profiles: dev
+  profiles:
+    active: test
   jpa:
     database: POSTGRESQL
     properties:
@@ -8,16 +9,25 @@ spring:
           time_zone : UTC
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    platform : postgres
-    url : jdbc:postgresql://localhost:5432/hn_marketplace
-    username : postgres
-    password :
-    hikari:
-      maximum-pool-size: 5
-      minimum-idle: 5
-      maxLifetime: 240000
-      connection-test-query:  SELECT 1
-      idle-timeout: 60000
+    dev:
+      platform : postgres
+      url : jdbc:postgresql://localhost:5432/hn_marketplace
+      username : postgres
+      password :
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 5
+        maxLifetime: 240000
+        connection-test-query:  SELECT 1
+        idle-timeout: 60000
+    test:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:testing_db
+      username: sa
+      password:
+      h2:
+        console:
+          enabled: true
 
 server:
   port: 8080
