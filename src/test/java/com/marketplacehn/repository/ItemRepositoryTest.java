@@ -43,24 +43,24 @@ class ItemRepositoryTest {
     void itShouldFindActiveItemById() {
         //given
         int status = 1; //ACTIVE
-        String itemId = "item456";
-        Item item = new Item(itemId);
+        Item item = new Item();
+        String itemId = item.getItemId();
         underTest.save(item);
 
         //when
-        Optional<Item> itemResult = underTest.findActiveItemById(itemId);
+        Optional<Item> expectedItem = underTest.findActiveItemById(itemId);
 
         //then
-        assertNotNull(itemResult);
-        assertTrue(itemResult.isPresent());
-        assertEquals(itemId, itemResult.get().getItemId());
-        assertEquals(status, itemResult.get().getItemStatus().getStatusCode());
+        assertNotNull(expectedItem);
+        assertTrue(expectedItem.isPresent());
+        assertEquals(itemId, expectedItem.get().getItemId());
+        assertEquals(status, expectedItem.get().getItemStatus().getStatusCode());
     }
 
     private List<Item> sampleItems() {
         List<Item> sampleItems = new ArrayList<>();
-        sampleItems.add(new Item("item123"));
-        sampleItems.add(new Item("item321"));
+        sampleItems.add(new Item());
+        sampleItems.add(new Item());
         return sampleItems;
     }
 }

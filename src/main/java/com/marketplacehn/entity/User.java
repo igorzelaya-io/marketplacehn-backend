@@ -28,6 +28,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "users", schema = "marketplace")
 @Getter
+@Setter
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class User {
@@ -62,8 +63,8 @@ public class User {
     @Setter
     private ModelStatus userStatus;
 
-    public User(String userId) {
-        this.userId = userId;
+    public User() {
+        this.userId = UUID.randomUUID().toString();
         userStatus = ModelStatus.ACTIVE;
     }
 

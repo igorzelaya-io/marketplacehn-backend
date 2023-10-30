@@ -6,9 +6,9 @@ import com.marketplacehn.repository.BidRepository;
 import com.marketplacehn.repository.ItemRepository;
 import com.marketplacehn.service.impl.BidServiceImpl;
 import com.marketplacehn.utils.SortingUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -25,8 +25,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BidServiceTest {
-    @InjectMocks
-    private BidServiceImpl underTest;
+    private BidService underTest;
     @Mock
     private BidRepository bidRepository;
     @Mock
@@ -34,8 +33,17 @@ class BidServiceTest {
     @Mock
     private SortingUtils sortingUtils;
 
+    @BeforeEach
+    void setUp() {
+        underTest = new BidServiceImpl(
+                bidRepository,
+                itemRepository,
+                sortingUtils
+        );
+    }
+
     @Test
-    void shouldFindAllItemBids() {
+    void itShouldFindAllItemBids() {
         //given
         Bid itemBid = mock(Bid.class);
         String bidId = itemBid.getBidId();
@@ -63,7 +71,7 @@ class BidServiceTest {
     }
 
     @Test
-    void shouldFindAllUserBids() {
+    void itShouldFindAllUserBids() {
         //given
         User user = mock(User.class);
         String userId = user.getUserId();

@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,10 +20,10 @@ class BidRepositoryTest {
     void itShouldFindUserAndItemById() {
         //given
         int status = 0; //INACTIVE
-        String itemId = "item123";
-        String userId = "user123";
-        Item item = new Item(itemId);
-        User user = new User(userId);
+        Item item = new Item();
+        User user = new User();
+        String itemId = item.getItemId();
+        String userId = user.getUserId();
 
         Bid bid = new Bid();
         bid.setUserBid(user);

@@ -81,8 +81,8 @@ public class Item {
     @Column(name = "photo_url")
     private Set<String> itemPhotos;
 
-    public Item(String itemId) {
-        this.itemId = itemId;
+    public Item() {
+        this.itemId = UUID.randomUUID().toString();
         itemStatus = ModelStatus.ACTIVE;
     }
 
