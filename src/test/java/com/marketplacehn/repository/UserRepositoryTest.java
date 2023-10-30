@@ -18,20 +18,24 @@ class UserRepositoryTest {
     @Test
     void itShouldFindUsernameAndUserStatus() {
         //given
+        int status = 1; //ACTIVE
+        String username = "admin";
         User user = User.builder()
-                .userName("user123")
+                .userName(username)
                 .build();
         user = User.prepareToPersist(user);
         underTest.save(user);
 
         //when
         Optional<User> expectedUser = underTest.findByUserNameAndUserStatus(
-                "user123",
+                username,
                 ModelStatus.ACTIVE.getStatusCode()
         );
 
         //then
+        assertNotNull(expectedUser);
         assertTrue(expectedUser.isPresent());
-        assertEquals(1, expectedUser.get().getUserStatus().getStatusCode());
+        assertEquals(username, expectedUser.get().getUserId());
+        assertEquals(status, expectedUser.get().getUserStatus().getStatusCode());
     }
 }

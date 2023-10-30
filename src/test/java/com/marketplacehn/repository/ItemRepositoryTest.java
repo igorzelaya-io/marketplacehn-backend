@@ -42,8 +42,8 @@ class ItemRepositoryTest {
     @Test
     void itShouldFindActiveItemById() {
         //given
+        int status = 1; //ACTIVE
         String itemId = "item456";
-        int status = 1;
         Item item = new Item(itemId);
         underTest.save(item);
 
@@ -61,6 +61,6 @@ class ItemRepositoryTest {
         List<Item> sampleItems = new ArrayList<>();
         sampleItems.add(new Item("item123"));
         sampleItems.add(new Item("item321"));
-        return  sampleItems;
+        return sampleItems;
     }
 }

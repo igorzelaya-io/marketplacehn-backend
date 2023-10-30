@@ -22,19 +22,19 @@ class BidRepositoryTest {
     @Test
     void itShouldFindUserAndItemById() {
         //given
-        Item item = new Item("item123");
-        User user = new User("user123");
-        Bid bid = Bid.builder()
-                .bidId(UUID.randomUUID().toString())
-                .bidValue(BigDecimal.TEN)
-                .bidDate(LocalDateTime.now())
-                .build();
+        int status = 0; //INACTIVE
+        String itemId = "item123";
+        String userId = "user123";
+        Item item = new Item(itemId);
+        User user = new User(userId);
+
+        Bid bid = new Bid();
         bid.setUserBid(user);
         bid.setItem(item);
         underTest.save(bid);
 
         //when
-        List<Object[]> result = underTest.findUserAndItemById("item123", "user123");
+        List<Object[]> result = underTest.findUserAndItemById(itemId, userId);
         Object[] resultRow = result.get(0);
         Item itemResult = (Item) resultRow[0];
         User userResult = (User) resultRow[1];
@@ -46,7 +46,7 @@ class BidRepositoryTest {
         assertNotNull(resultRow);
         assertEquals(2, resultRow.length);
 
-        assertNotEquals(0, itemResult.getItemStatus().ordinal());
-        assertNotEquals(0, userResult.getUserStatus().ordinal());
+        assertNotEquals(status, itemResult.getItemStatus().getStatusCode());
+        assertNotEquals(status, userResult.getUserStatus().getStatusCode());
     }
 }
