@@ -34,7 +34,7 @@ public class BidController {
     @NonNull
     private final BidService bidService;
 
-    @GetMapping("bids/{bidId}")
+    @GetMapping("/bids/{bidId}")
     public ResponseEntity<? extends Response<Bid>> findBidById(@PathVariable("bidId") final String bidId) {
         BaseResponse<Bid> response = new BaseResponse<>();
         final Bid bid = bidService.findBidById(bidId);

@@ -6,7 +6,7 @@ import com.marketplacehn.repository.UserRepository;
 import com.marketplacehn.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor

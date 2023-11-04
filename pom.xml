@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <version>3.0.12</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com</groupId>
@@ -14,7 +14,7 @@
     <name>marketplacehn-backend</name>
     <description>marketplacehn-backend</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
 
@@ -42,10 +42,12 @@
         </dependency>
 
         <!-- Hibernate Core -->
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.6.14.Final</version>
+            <version>6.3.1.Final</version>
         </dependency>
 
         <dependency>
@@ -68,7 +70,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.12.1</version>
+            <version>2.15.2</version>
         </dependency>
 
     </dependencies>

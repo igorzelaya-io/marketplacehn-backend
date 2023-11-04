@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplacehn.entity.dto.BidValueJson;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
 
 @Converter(autoApply = true)
 public class BidValueJsonConverter implements AttributeConverter<BidValueJson, String> {
