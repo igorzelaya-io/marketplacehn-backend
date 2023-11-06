@@ -1,9 +1,12 @@
 package com.marketplacehn.service;
 
 import com.marketplacehn.entity.Bid;
+import com.marketplacehn.entity.Item;
 import com.marketplacehn.entity.User;
+import com.marketplacehn.entity.dto.BidValueJson;
 import com.marketplacehn.repository.BidRepository;
 import com.marketplacehn.repository.ItemRepository;
+import com.marketplacehn.request.BidPostingDto;
 import com.marketplacehn.service.impl.BidServiceImpl;
 import com.marketplacehn.utils.SortingUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,15 +16,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.math.BigDecimal.TEN;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BidServiceTest {
@@ -40,6 +50,110 @@ class BidServiceTest {
                 itemRepository,
                 sortingUtils
         );
+    }
+
+    @Test
+    void itShouldSaveBid() {
+        //given
+        Bid bid = new Bid();
+        Item item = new Item();
+        User user = new User();
+
+        String userId = user.getUserId();
+        String itemId = item.getItemId();
+
+        item.setItemCurrentHighestBid(new BidValueJson("previousBid123", new BigDecimal("120.0")));
+        bid.setBidValue(new BigDecimal("150.0"));
+
+        List<Object> objectList = new ArrayList<>();
+        objectList.add(item);
+        objectList.add(user);
+
+        BidPostingDto bidPostingDto = new BidPostingDto();
+        bidPostingDto.setBidToPost(bid);
+        bidPostingDto.setUserId(userId);
+        bidPostingDto.setItemId(itemId);
+
+        //when
+        when(bidRepository
+                .findUserAndItemById(itemId, userId)
+                .stream()
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toList())
+        ).thenReturn(objectList);
+
+        Bid expectedBid = underTest.saveBid(bidPostingDto);
+
+        //then
+        assertEquals(bid, expectedBid);
+        verify(underTest, times(1)).saveBid(bidPostingDto);
+    }
+
+    @Test
+    void itShouldUpdateBid() {
+        //given
+        Bid existingBid = new Bid();
+        String existingBidId = existingBid.getBidId();
+
+        Bid updatedBid = new Bid();
+        String updatedBidId = updatedBid.getBidId();
+        updatedBid.setBidValue(new BigDecimal("150.0"));
+
+        Item updatedBidItem = new Item();
+        updatedBidItem.setItemCurrentHighestBid(
+                new BidValueJson(updatedBidId, new BigDecimal("120.0"))
+        );
+        updatedBid.setItem(updatedBidItem);
+
+        //when
+        when(bidRepository.findById(existingBidId)).thenReturn(Optional.of(existingBid));
+        when(itemRepository.findActiveItemById(updatedBid.getItem().getItemId()))
+                .thenReturn(Optional.of(updatedBidItem));
+        when(bidRepository.save(any(Bid.class))).thenAnswer(invocation -> {
+            return invocation.<Bid>getArgument(0);
+        });
+        Bid expectedBid = underTest.updateBid(existingBidId, updatedBid);
+
+        //then
+        assertEquals(LocalDateTime.now(), existingBid.getUpdatedAt());
+        verify(underTest, times(1))
+                .updateBid(existingBidId, updatedBid);
+    }
+
+    @Test
+    void itShouldDeleteBidById() {
+        //given
+        Item item = new Item();
+        Bid highestBid = new Bid();
+        String itemId = item.getItemId();
+        String bidId = highestBid.getBidId();
+
+        item.setItemCurrentHighestBid(new BidValueJson("bid123", TEN));
+        List<Bid> mockBids = createMockBids();
+
+        //when
+        when(itemRepository.findActiveItemById(itemId))
+                .thenReturn(Optional.of(item));
+        when(bidRepository.findByItem_ItemId(
+                eq(itemId),
+                any(Pageable.class)
+        )).thenReturn(mockBids);
+        doNothing().when(bidRepository).deleteById(bidId);
+
+        underTest.deleteBidById(itemId, bidId);
+
+        //then
+        //highest bid not removed
+        assertEquals("bid123", item.getItemCurrentHighestBid().getBidId());
+
+        item.getItemCurrentHighestBid().setBidId(bidId);
+        underTest.deleteBidById(itemId, bidId);
+
+        //highest bid removed
+        assertNull(item.getItemCurrentHighestBid().getBidId());
+        assertNull(item.getItemCurrentHighestBid().getBidValue());
+
+        verify(bidRepository, times(2)).deleteById(bidId);
     }
 
     @Test
@@ -100,14 +214,9 @@ class BidServiceTest {
 
     private List<Bid> createMockBids() {
         List<Bid> mockBids = new ArrayList<>();
-        Bid bid1 = mock(Bid.class);
-        Bid bid2 = mock(Bid.class);
-        Bid bid3 = mock(Bid.class);
-
-        mockBids.add(bid1);
-        mockBids.add(bid2);
-        mockBids.add(bid3);
-
+        mockBids.add(mock(Bid.class));
+        mockBids.add(mock(Bid.class));
+        mockBids.add(mock(Bid.class));
         return mockBids;
     }
 

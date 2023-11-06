@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.marketplacehn.entity.Bid;
 import lombok.Getter;
+import lombok.Setter;
 
 @JsonSerialize
 @Getter
+@Setter
 public class BidPostingDto {
 
     @JsonProperty
