@@ -1,6 +1,7 @@
 package com.marketplacehn.controller;
 
 import com.marketplacehn.entity.Bid;
+import com.marketplacehn.response.BaseResponse;
 import com.marketplacehn.response.Response;
 import com.marketplacehn.service.BidService;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,18 +44,19 @@ class BidControllerTest {
     @BeforeEach()
     void setUp() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.context).build();
+        response = new BaseResponse<>();
+        response.setPayload(new Bid());
     }
 
     @Test
     void shouldFindBidById() throws Exception {
-
         when(underTest.findBidById(BID_ID))
-                .thenReturn((Bid) response);
-        ResultActions result =  mvc.perform(get(PREFIX + "/bids/{bidId}", BID_ID)
+                .thenReturn(response);
+        ResultActions result = mvc.perform(get(PREFIX + "/bids/{bidId}", BID_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON));
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Bid was found."));
+                .andExpect(jsonPath("$.bidId").value(BID_ID));
     }
 }
