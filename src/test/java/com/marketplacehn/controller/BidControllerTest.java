@@ -2,6 +2,7 @@ package com.marketplacehn.controller;
 
 import com.marketplacehn.entity.Bid;
 import com.marketplacehn.entity.Item;
+import com.marketplacehn.entity.User;
 import com.marketplacehn.entity.enums.ModelStatus;
 import com.marketplacehn.request.BidPostingDto;
 import com.marketplacehn.response.BaseResponse;
@@ -10,7 +11,6 @@ import com.marketplacehn.service.BidService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -24,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,10 +31,12 @@ import java.util.UUID;
 class BidControllerTest extends AbstractTestController{
     @MockBean
     private BidService underTest;
+    private User user;
     private Bid bid;
     private Item item;
     private BidPostingDto bidDto;
     private Response<Bid> response;
+    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String BID_ID = UUID.randomUUID().toString();
     private static final String ITEM_ID = UUID.randomUUID().toString();
     private static final int PAGE_NUM = 0;
@@ -45,6 +46,11 @@ class BidControllerTest extends AbstractTestController{
 
     @BeforeEach()
     void setUp() {
+        user = User.builder()
+                .userId(USER_ID)
+                .userStatus(ModelStatus.ACTIVE)
+                .build();
+
         item = Item.builder()
                 .itemId(ITEM_ID)
                 .itemPostDate(LocalDateTime.now())
@@ -54,6 +60,7 @@ class BidControllerTest extends AbstractTestController{
         bid = Bid.builder()
                 .bidId(BID_ID)
                 .item(item)
+                .userBid(user)
                 .bidDate(LocalDateTime.now())
                 .build();
         response = new BaseResponse<>();
@@ -101,6 +108,17 @@ class BidControllerTest extends AbstractTestController{
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void itShouldFindUserBids() throws Exception {
+        Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
+        when(underTest.findUserBids(USER_ID, PAGE_NUM, PAGE_SIZE, SORT))
+                .thenReturn(bidsPage);
+        ResultActions result = doRequestFindUserBids();
+        result
+                .andExpect(status().isOk());
+
+    }
+
     private ResultActions doRequestFindBidById() throws Exception {
         return  mvc.perform(get(PREFIX + "/bids/{bidId}", BID_ID)
                 .accept(MediaType.APPLICATION_JSON)
@@ -127,5 +145,15 @@ class BidControllerTest extends AbstractTestController{
                 .param("sort", SORT)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    private ResultActions doRequestFindUserBids() throws Exception {
+        return mvc
+                .perform(get(PREFIX + "/users/{userId}/bids", USER_ID)
+                        .param("page", String.valueOf(PAGE_NUM))
+                        .param("size", String.valueOf(PAGE_SIZE))
+                        .param("sort", SORT)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON));
     }
 }

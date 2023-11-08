@@ -85,7 +85,7 @@ public class BidController {
     public ResponseEntity<? extends Response<Bid>> getUserBids(@PathVariable final String userId,
                                @RequestParam(required = false, defaultValue = "0") final int page,
                                @RequestParam(required = false, defaultValue = "10") final int size,
-                               @RequestParam(required = false, defaultValue = "bidValue,desc") final String sort[]) {
+                               @RequestParam(required = false, defaultValue = "bidValue,desc") final String[] sort) {
         PageableResponse<Bid> pageResponse = new PageableResponse<>();
         Page<Bid> bidsPage = bidService
                 .findUserBids(userId, page, size, sort);
