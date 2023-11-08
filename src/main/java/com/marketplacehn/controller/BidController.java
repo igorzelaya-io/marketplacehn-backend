@@ -71,7 +71,7 @@ public class BidController {
                                       @RequestParam(required = false, defaultValue = "bidValue,desc") String[] sort){
 
         PageableResponse<Bid> pageResponse = new PageableResponse<>();
-        Page<Bid> bidsPage = bidService
+            Page<Bid> bidsPage = bidService
                 .findItemBids(itemId, page, size, sort);
 
         return pageResponse
