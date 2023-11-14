@@ -1,18 +1,12 @@
 package com.marketplacehn.controller;
 
 import com.marketplacehn.entity.Bid;
-import com.marketplacehn.entity.Item;
-import com.marketplacehn.entity.User;
-import com.marketplacehn.entity.enums.ModelStatus;
 import com.marketplacehn.request.BidPostingDto;
-import com.marketplacehn.response.BaseResponse;
-import com.marketplacehn.response.Response;
 import com.marketplacehn.service.BidService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,11 +25,8 @@ import java.util.UUID;
 class BidControllerTest extends AbstractTestController{
     @MockBean
     private BidService underTest;
-    private User user;
     private Bid bid;
-    private Item item;
     private BidPostingDto bidDto;
-    private Response<Bid> response;
     private static final String USER_ID = UUID.randomUUID().toString();
     private static final String BID_ID = UUID.randomUUID().toString();
     private static final String ITEM_ID = UUID.randomUUID().toString();
@@ -46,25 +37,10 @@ class BidControllerTest extends AbstractTestController{
 
     @BeforeEach()
     void setUp() {
-        user = User.builder()
-                .userId(USER_ID)
-                .userStatus(ModelStatus.ACTIVE)
-                .build();
-
-        item = Item.builder()
-                .itemId(ITEM_ID)
-                .itemPostDate(LocalDateTime.now())
-                .itemStatus(ModelStatus.ACTIVE)
-                .build();
-
         bid = Bid.builder()
                 .bidId(BID_ID)
-                .item(item)
-                .userBid(user)
                 .bidDate(LocalDateTime.now())
                 .build();
-        response = new BaseResponse<>();
-        response.setPayload(bid);
 
         bidDto = new BidPostingDto();
         bidDto.setBidToPost(bid);
@@ -101,22 +77,29 @@ class BidControllerTest extends AbstractTestController{
     @Test
     void itShouldFindItemBids() throws Exception {
         Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
-        when(underTest.findItemBids(ITEM_ID, PAGE_NUM, PAGE_SIZE, SORT))
-                .thenReturn(bidsPage);
+        doReturn(bidsPage).when(underTest)
+                .findItemBids(ITEM_ID, PAGE_NUM, PAGE_SIZE, SORT);
         ResultActions result = doRequestFindItemBids();
         result
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Item bids retrieved."))
+                .andExpect(jsonPath("$.data.size()").value(bidsPage.getSize()))
+                .andExpect(jsonPath("$.data.number").value(bidsPage.getNumber()))
+                .andExpect(jsonPath("$.data.content").exists());
     }
 
     @Test
     void itShouldFindUserBids() throws Exception {
         Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
-        when(underTest.findUserBids(USER_ID, PAGE_NUM, PAGE_SIZE, SORT))
-                .thenReturn(bidsPage);
+        doReturn(bidsPage).when(underTest)
+                .findUserBids(USER_ID, PAGE_NUM, PAGE_SIZE, SORT);
         ResultActions result = doRequestFindUserBids();
         result
-                .andExpect(status().isOk());
-
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User bids retrieved."))
+                .andExpect(jsonPath("$.data.size()").value(bidsPage.getSize()))
+                .andExpect(jsonPath("$.data.number").value(bidsPage.getNumber()))
+                .andExpect(jsonPath("$.data.content").exists());
     }
 
     private ResultActions doRequestFindBidById() throws Exception {
