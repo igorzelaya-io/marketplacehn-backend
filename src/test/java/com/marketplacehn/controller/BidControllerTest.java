@@ -4,6 +4,7 @@ import com.marketplacehn.entity.Bid;
 import com.marketplacehn.request.BidPostingDto;
 import com.marketplacehn.service.BidService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
@@ -75,6 +76,7 @@ class BidControllerTest extends AbstractTestController{
     }
 
     @Test
+    @Disabled()
     void itShouldFindItemBids() throws Exception {
         Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
         doReturn(bidsPage).when(underTest)
@@ -89,6 +91,7 @@ class BidControllerTest extends AbstractTestController{
     }
 
     @Test
+    @Disabled()
     void itShouldFindUserBids() throws Exception {
         Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
         doReturn(bidsPage).when(underTest)

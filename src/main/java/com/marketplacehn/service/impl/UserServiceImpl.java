@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(final String userId) {
         User user = findUserById(userId);
         user.setUserStatus(ModelStatus.INACTIVE);
-        userRepo.deleteById(userId);
+        userRepo.save(user);
     }
 
     @Override

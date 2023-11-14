@@ -38,7 +38,7 @@ class ItemServiceTest {
         persistedItem = Item.prepareToPersist(item);
     }
     @Test
-    void whenItemExists_returnItem() {
+    void findItemById_whenItemExists() {
         when(itemRepository.findById(ITEM_ID))
                 .thenReturn(Optional.of(item));
 
@@ -48,7 +48,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void whenItemDoesNotExist_throwException() {
+    void findItemById_whenItemDoesNotExists() {
         when(itemRepository.findById(ITEM_ID))
                 .thenReturn(Optional.empty());
 
