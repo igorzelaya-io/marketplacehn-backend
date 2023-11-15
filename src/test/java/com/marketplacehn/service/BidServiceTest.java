@@ -143,12 +143,54 @@ class BidServiceTest {
 
     @Test
     void updateBid_whenCurrentBidIsHigher() {
+        Bid updatedBid = Bid.builder()
+                .bidValue(new BigDecimal("200"))
+                .item(item)
+                .build();
 
+        item.setItemCurrentHighestBid(
+                new BidValueJson(
+                        UUID.randomUUID().toString(),
+                        new BigDecimal("150")
+                ));
+
+        when(bidRepository.findById(BID_ID)).
+                thenReturn(Optional.of(bid));
+        when(itemRepository.findActiveItemById(ITEM_ID))
+                .thenReturn(Optional.of(item));
+        when(itemRepository.save(item))
+                .thenReturn(item);
+        when(bidRepository.save(updatedBid)).thenReturn(updatedBid);
+
+        Bid expectedBid = underTest.updateBid(BID_ID, updatedBid);
+
+        Assertions.assertEquals(
+                updatedBid.getBidValue(),
+                bid.getBidValue());
     }
 
     @Test
     void updateBid_whenCurrentBidIsNotHigher() {
+        Bid updatedBid = Bid.builder()
+                .bidValue(new BigDecimal("200"))
+                .item(item)
+                .build();
 
+        item.setItemCurrentHighestBid(
+                new BidValueJson(
+                        UUID.randomUUID().toString(),
+                        new BigDecimal("250")
+                ));
+
+        when(bidRepository.findById(BID_ID)).
+                thenReturn(Optional.of(bid));
+        when(itemRepository.findActiveItemById(ITEM_ID))
+                .thenReturn(Optional.of(item));
+
+        Assertions.assertThrows(
+                MarketplaceException.class,
+                () -> underTest.updateBid(BID_ID, updatedBid)
+        );
     }
 
     @Test
