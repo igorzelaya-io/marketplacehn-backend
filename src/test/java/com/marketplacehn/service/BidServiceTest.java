@@ -62,6 +62,9 @@ class BidServiceTest {
                 .bidId(BID_ID)
                 .bidValue(new BigDecimal("150"))
                 .build();
+        secondHighestBid = Bid.builder()
+                .bidValue(new BigDecimal("100"))
+                .build();
         item = Item.builder()
                 .itemId(ITEM_ID)
                 .build();
@@ -127,7 +130,7 @@ class BidServiceTest {
                 .thenReturn(OBJECTS);
 
         Assertions.assertThrows(
-                MarketplaceException.class,
+                ResourceNotFoundException.class,
                 () -> underTest.saveBid(bidDto));
     }
 
