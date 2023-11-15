@@ -111,7 +111,7 @@ public class BidServiceImpl implements BidService {
 
             List<Sort.Order> orders = List.of(new Sort.Order(Sort.Direction.DESC, "bidValue"));
             Pageable pageable = PageRequest.of(0, 2, Sort.by(orders));
-            final int SECOND_HIGHEST_BID_INDEX = 2;
+            final int SECOND_HIGHEST_BID_INDEX = 1;
 
             final Bid itemSecondHighestBid = bidRepository.findByItem_ItemId(itemId, pageable)
                     .get(SECOND_HIGHEST_BID_INDEX);
@@ -153,8 +153,9 @@ public class BidServiceImpl implements BidService {
 
             item.setItemCurrentHighestBid(bidData);
             itemRepository.save(item);
+        } else {
+            throw new MarketplaceException(MarketplaceError.CURRENT_BID_IS_HIGHER.getMessage());
         }
-        throw new MarketplaceException(MarketplaceError.CURRENT_BID_IS_HIGHER.getMessage());
     }
 
 

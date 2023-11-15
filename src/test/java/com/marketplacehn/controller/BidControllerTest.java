@@ -76,7 +76,6 @@ class BidControllerTest extends AbstractTestController{
     }
 
     @Test
-    @Disabled()
     void itShouldFindItemBids() throws Exception {
         Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
         doReturn(bidsPage).when(underTest)
