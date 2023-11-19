@@ -2,33 +2,21 @@ package com.marketplacehn.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonSerialize
-public class PageableResponse<T>  implements IPageResponse<T> {
-    @JsonProperty
-    private Response<List<T>> response;
+public class PaginatedBaseResponse<T> extends BaseResponse<List<T>> implements PaginatedResponse<T> {
     @JsonProperty
     private int pageSize;
     @JsonProperty
     private int pageNumber;
     @JsonProperty
-    private int numberOfElements;
+    private long totalElements;
     @JsonProperty
     private int totalPages;
-
-    public PageableResponse(Response<List<T>> response, int pageSize, int pageNumber,
-                            int numberOfElements, int totalPages) {
-        this.response = response;
-        this.pageSize = pageSize;
-        this.pageNumber = pageNumber;
-        this.numberOfElements = numberOfElements;
-        this.totalPages = totalPages;
-    }
 
     @Override
     public int getPageSize() {
@@ -51,13 +39,13 @@ public class PageableResponse<T>  implements IPageResponse<T> {
     }
 
     @Override
-    public int getNumberOfElements() {
-        return numberOfElements;
+    public long getTotalElements() {
+        return totalElements;
     }
 
     @Override
-    public void setNumberOfElements(int numberOfElements) {
-        this.numberOfElements = numberOfElements;
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
     }
 
     @Override
@@ -72,50 +60,42 @@ public class PageableResponse<T>  implements IPageResponse<T> {
 
     @Override
     public List<T> getPayload() {
-        return response.getPayload();
+        return super.getPayload();
     }
 
     @Override
     public void setPayload(List<T> payload) {
-        response.setPayload(payload);
+        super.setPayload(payload);
     }
 
     @Override
     public int getHttpStatus() {
-        return response.getHttpStatus();
+        return super.getHttpStatus();
     }
 
     @Override
     public void setHttpStatus(int httpStatus) {
-        response.setHttpStatus(httpStatus);
+        super.setHttpStatus(httpStatus);
     }
 
     @Override
     public LocalDateTime getTimestamp() {
-        return response.getTimestamp();
+        return super.getTimestamp();
     }
 
     @Override
     public void setTimestamp(LocalDateTime timestamp) {
-        response.setTimestamp(timestamp);
+        super.setTimestamp(timestamp);
     }
 
     @Override
     public String getMessage() {
-        return response.getMessage();
+        return super.getMessage();
     }
 
     @Override
     public void setMessage(String message) {
-        response.setMessage(message);
+        super.setMessage(message);
     }
 
-    public ResponseEntity<PageableResponse<T>> buildResponseEntity(
-            HttpStatus httpStatus, String message, List<T> payload) {
-        response.setHttpStatus(httpStatus.value());
-        response.setTimestamp(LocalDateTime.now());
-        response.setMessage(message);
-        response.setPayload(payload);
-        return new ResponseEntity<>(this, httpStatus);
-    }
 }

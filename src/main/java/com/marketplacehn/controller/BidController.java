@@ -3,7 +3,7 @@ package com.marketplacehn.controller;
 import com.marketplacehn.entity.Bid;
 import com.marketplacehn.request.BidPostingDto;
 import com.marketplacehn.response.BaseResponse;
-import com.marketplacehn.response.PageableResponse;
+import com.marketplacehn.response.PaginatedBaseResponse;
 import com.marketplacehn.response.Response;
 import com.marketplacehn.service.BidService;
 import lombok.NonNull;
@@ -76,7 +76,7 @@ public class BidController {
         Page<Bid> bidsPage = bidService
             .findItemBids(itemId, page, size, sort);
 
-        PageableResponse<Bid> pageResponse = new PageableResponse<>(
+        PaginatedBaseResponse<Bid> pageResponse = new PaginatedBaseResponse<>(
                 new BaseResponse<>(),
                 page, size, bidsPage.getNumberOfElements(), bidsPage.getTotalPages()
         );
@@ -95,7 +95,7 @@ public class BidController {
         Page<Bid> bidsPage = bidService
                 .findUserBids(userId, page, size, sort);
 
-        PageableResponse<Bid> pageResponse = new PageableResponse<>(
+        PaginatedBaseResponse<Bid> pageResponse = new PaginatedBaseResponse<>(
                 new BaseResponse<>(), page, size, bidsPage.getNumberOfElements(), bidsPage.getTotalPages()
         );
         return pageResponse

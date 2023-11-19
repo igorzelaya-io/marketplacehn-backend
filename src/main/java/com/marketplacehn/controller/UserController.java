@@ -3,7 +3,8 @@ package com.marketplacehn.controller;
 import com.marketplacehn.entity.User;
 import com.marketplacehn.entity.dto.UserDto;
 import com.marketplacehn.response.BaseResponse;
-import com.marketplacehn.response.PageableResponse;
+import com.marketplacehn.response.PaginatedBaseResponse;
+import com.marketplacehn.response.PaginatedResponse;
 import com.marketplacehn.response.Response;
 import com.marketplacehn.service.UserService;
 import lombok.NonNull;
@@ -44,22 +45,17 @@ public class UserController {
     }
 
     @GetMapping(params = {"page", "size"})
-    public ResponseEntity<? extends Response<List<UserDto>>> findPaginatedUsers
+    public ResponseEntity<? extends PaginatedResponse<UserDto>> findPaginatedUsers
             (@RequestParam(required = false, defaultValue = "0") int page,
              @RequestParam(required = false, defaultValue = "10") int size,
              @RequestParam(required = false, defaultValue = "userName, desc") String[] sort){
 
         final Page<UserDto> usersPage = userService.findPaginatedUsers(page, size, sort);
+        PaginatedResponse<UserDto> paginatedResponse = new PaginatedBaseResponse<>();
 
-        BaseResponse<List<UserDto>> delegatedResponse = new BaseResponse<>();
-
-        PageableResponse<UserDto> pageableResponse = new PageableResponse<>(
-                delegatedResponse, size, page, usersPage.getNumberOfElements(), usersPage.getTotalPages()
-        );
-
-        ResponseEntity<? extends Response<List<UserDto>>> response = pageableResponse
-                .buildResponseEntity(HttpStatus.OK, "Users fetched correctly", usersPage.getContent());
-        return response;
+        return paginatedResponse.buildPaginatedResponseEntity(HttpStatus.OK, "Users fetched successfully.",
+                usersPage.getContent(), usersPage.getNumber(), usersPage.getSize(), usersPage.getTotalElements(),
+                usersPage.getTotalPages());
     }
 
     @GetMapping
