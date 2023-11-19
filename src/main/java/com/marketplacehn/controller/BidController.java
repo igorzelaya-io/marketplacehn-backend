@@ -4,6 +4,7 @@ import com.marketplacehn.entity.Bid;
 import com.marketplacehn.request.BidPostingDto;
 import com.marketplacehn.response.BaseResponse;
 import com.marketplacehn.response.PaginatedBaseResponse;
+import com.marketplacehn.response.PaginatedResponse;
 import com.marketplacehn.response.Response;
 import com.marketplacehn.service.BidService;
 import lombok.NonNull;
@@ -67,23 +68,17 @@ public class BidController {
     }
 
     @GetMapping("/items/{itemId}/bids")
-    public ResponseEntity<? extends Response<List<Bid>>> getItemsBids(@PathVariable String itemId,
-                                                                     @RequestParam(required = false, defaultValue = "0") int page,
-                                                                     @RequestParam(required = false, defaultValue = "10") int size,
-                                                                     @RequestParam(required = false, defaultValue = "bidValue,desc") String[] sort){
-
-
+    public ResponseEntity<? extends PaginatedResponse<Bid>> getItemsBids(@PathVariable String itemId,
+                                                                               @RequestParam(required = false, defaultValue = "0") int page,
+                                                                               @RequestParam(required = false, defaultValue = "10") int size,
+                                                                               @RequestParam(required = false, defaultValue = "bidValue,desc") String[] sort){
         Page<Bid> bidsPage = bidService
             .findItemBids(itemId, page, size, sort);
 
-        PaginatedBaseResponse<Bid> pageResponse = new PaginatedBaseResponse<>(
-                new BaseResponse<>(),
-                page, size, bidsPage.getNumberOfElements(), bidsPage.getTotalPages()
-        );
+        PaginatedResponse<Bid> response = new PaginatedBaseResponse<>();
 
-        return pageResponse
-                .buildResponseEntity
-                        (HttpStatus.OK, "Item bids retrieved.", bidsPage.getContent());
+        return response.buildPaginatedResponseEntity(HttpStatus.OK, "Item bids retrieved successfully", bidsPage.getContent(),
+                bidsPage.getNumber(), bidsPage.getSize(), bidsPage.getTotalElements(), bidsPage.getTotalPages());
 
     }
 
@@ -95,12 +90,10 @@ public class BidController {
         Page<Bid> bidsPage = bidService
                 .findUserBids(userId, page, size, sort);
 
-        PaginatedBaseResponse<Bid> pageResponse = new PaginatedBaseResponse<>(
-                new BaseResponse<>(), page, size, bidsPage.getNumberOfElements(), bidsPage.getTotalPages()
-        );
-        return pageResponse
-                .buildResponseEntity
-                        (HttpStatus.OK, "User bids retrieved.", bidsPage.getContent());
+        PaginatedResponse<Bid> response = new PaginatedBaseResponse<>();
+
+        return response.buildPaginatedResponseEntity(HttpStatus.OK, "Item bids retrieved successfully", bidsPage.getContent(),
+                bidsPage.getNumber(), bidsPage.getSize(), bidsPage.getTotalElements(), bidsPage.getTotalPages());
     }
 
 
