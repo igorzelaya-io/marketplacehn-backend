@@ -15,10 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -128,7 +125,7 @@ class BidServiceTest {
         String bidId = highestBid.getBidId();
 
         item.setItemCurrentHighestBid(new BidValueJson("bid123", TEN));
-        List<Bid> mockBids = createMockBids();
+        Page<Bid> mockBids = createMockBids();
 
         //when
         when(itemRepository.findActiveItemById(itemId))
@@ -167,7 +164,7 @@ class BidServiceTest {
         List<Sort.Order> sortingOrder = new ArrayList<>();
         sortingOrder.add(new Sort.Order(Sort.Direction.DESC, "bidValue"));
 
-        List<Bid> mockBids = createMockBids();
+        Page<Bid> mockBids = createMockBids();
 
         //when
         when(sortingUtils.getSortingOrder(sort)).thenReturn(sortingOrder);
@@ -180,7 +177,7 @@ class BidServiceTest {
         Page<Bid> itemBids = underTest.findItemBids(bidId, page, size, sort);
 
         //then
-        assertEquals(mockBids.size(), itemBids.getTotalElements());
+        assertEquals(mockBids.getTotalElements(), itemBids.getTotalElements());
     }
 
     @Test
@@ -195,7 +192,7 @@ class BidServiceTest {
         List<Sort.Order> sortingOrder = new ArrayList<>();
         sortingOrder.add(new Sort.Order(Sort.Direction.DESC, "bidValue"));
 
-        List<Bid> mockBids = createMockBids();
+        Page<Bid> mockBids = createMockBids();
 
         //when
         when(sortingUtils.getSortingOrder(sort)).thenReturn(sortingOrder);
@@ -208,15 +205,15 @@ class BidServiceTest {
         Page<Bid> userBids = underTest.findUserBids(userId, page, size, sort);
 
         //then
-        assertEquals(mockBids.size(), userBids.getTotalElements());
+        assertEquals(mockBids.getTotalElements(), userBids.getTotalElements());
     }
 
-    private List<Bid> createMockBids() {
+    private Page<Bid> createMockBids() {
         List<Bid> mockBids = new ArrayList<>();
         mockBids.add(mock(Bid.class));
         mockBids.add(mock(Bid.class));
         mockBids.add(mock(Bid.class));
-        return mockBids;
+        return new PageImpl<>(mockBids);
     }
 
 }

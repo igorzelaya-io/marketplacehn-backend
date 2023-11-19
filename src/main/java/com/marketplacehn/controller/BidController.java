@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Rest Controller for Bid entity.
  * @author Igor A. Zelaya
@@ -65,35 +67,40 @@ public class BidController {
     }
 
     @GetMapping("/items/{itemId}/bids")
-    public ResponseEntity<? extends Response<Bid>> getItemsBids(@PathVariable String itemId,
-                                      @RequestParam(required = false, defaultValue = "0") int page,
-                                      @RequestParam(required = false, defaultValue = "10") int size,
-                                      @RequestParam(required = false, defaultValue = "bidValue,desc") String[] sort){
+    public ResponseEntity<? extends Response<List<Bid>>> getItemsBids(@PathVariable String itemId,
+                                                                     @RequestParam(required = false, defaultValue = "0") int page,
+                                                                     @RequestParam(required = false, defaultValue = "10") int size,
+                                                                     @RequestParam(required = false, defaultValue = "bidValue,desc") String[] sort){
 
-        PageableResponse<Bid> pageResponse = new PageableResponse<>();
-            Page<Bid> bidsPage = bidService
-                .findItemBids(itemId, page, size, sort);
+
+        Page<Bid> bidsPage = bidService
+            .findItemBids(itemId, page, size, sort);
+
+        PageableResponse<Bid> pageResponse = new PageableResponse<>(
+                new BaseResponse<>(),
+                page, size, bidsPage.getNumberOfElements(), bidsPage.getTotalPages()
+        );
 
         return pageResponse
                 .buildResponseEntity
-                        (HttpStatus.OK, "Item bids retrieved.", bidsPage.getSize(), bidsPage.getNumberOfElements(),
-                                bidsPage.getTotalPages(), bidsPage.getNumber(), bidsPage.getContent());
+                        (HttpStatus.OK, "Item bids retrieved.", bidsPage.getContent());
 
     }
 
     @GetMapping("/users/{userId}/bids")
-    public ResponseEntity<? extends Response<Bid>> getUserBids(@PathVariable final String userId,
+    public ResponseEntity<? extends Response<List<Bid>>> getUserBids(@PathVariable final String userId,
                                @RequestParam(required = false, defaultValue = "0") final int page,
                                @RequestParam(required = false, defaultValue = "10") final int size,
                                @RequestParam(required = false, defaultValue = "bidValue,desc") final String[] sort) {
-        PageableResponse<Bid> pageResponse = new PageableResponse<>();
         Page<Bid> bidsPage = bidService
                 .findUserBids(userId, page, size, sort);
 
+        PageableResponse<Bid> pageResponse = new PageableResponse<>(
+                new BaseResponse<>(), page, size, bidsPage.getNumberOfElements(), bidsPage.getTotalPages()
+        );
         return pageResponse
                 .buildResponseEntity
-                        (HttpStatus.OK, "User bids retrieved.", bidsPage.getSize(), bidsPage.getNumberOfElements(),
-                                bidsPage.getTotalPages(), bidsPage.getNumber(), bidsPage.getContent());
+                        (HttpStatus.OK, "User bids retrieved.", bidsPage.getContent());
     }
 
 

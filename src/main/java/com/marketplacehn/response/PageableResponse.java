@@ -9,42 +9,25 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonSerialize
-@NoArgsConstructor
-public class PageableResponse<T> implements IPageResponse<T>, Response<T>{
-
+public class PageableResponse<T>  implements IPageResponse<T> {
     @JsonProperty
-    private List<T> payloadPage;
-
+    private Response<List<T>> response;
     @JsonProperty
     private int pageSize;
-
     @JsonProperty
     private int pageNumber;
-
     @JsonProperty
     private int numberOfElements;
-
     @JsonProperty
     private int totalPages;
 
-    @JsonProperty
-    private int httpStatus;
-
-    @JsonProperty
-    private LocalDateTime timestamp;
-
-    @JsonProperty
-    private String message;
-
-
-    @Override
-    public List<T> getPayloadPage() {
-        return payloadPage;
-    }
-
-    @Override
-    public void setPayloadPage(List<T> payloadPage) {
-        this.payloadPage = payloadPage;
+    public PageableResponse(Response<List<T>> response, int pageSize, int pageNumber,
+                            int numberOfElements, int totalPages) {
+        this.response = response;
+        this.pageSize = pageSize;
+        this.pageNumber = pageNumber;
+        this.numberOfElements = numberOfElements;
+        this.totalPages = totalPages;
     }
 
     @Override
@@ -88,57 +71,51 @@ public class PageableResponse<T> implements IPageResponse<T>, Response<T>{
     }
 
     @Override
-    public T getPayload() {
-        throw new UnsupportedOperationException();
+    public List<T> getPayload() {
+        return response.getPayload();
     }
 
     @Override
-    public void setPayload(T payload) {
-        throw new UnsupportedOperationException();
+    public void setPayload(List<T> payload) {
+        response.setPayload(payload);
     }
 
     @Override
     public int getHttpStatus() {
-        return httpStatus;
+        return response.getHttpStatus();
     }
 
     @Override
     public void setHttpStatus(int httpStatus) {
-        this.httpStatus = httpStatus;
+        response.setHttpStatus(httpStatus);
     }
 
     @Override
     public LocalDateTime getTimestamp() {
-        return timestamp;
+        return response.getTimestamp();
     }
 
     @Override
     public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+        response.setTimestamp(timestamp);
     }
 
     @Override
     public String getMessage() {
-        return message;
+        return response.getMessage();
     }
 
     @Override
     public void setMessage(String message) {
-        this.message = message;
+        response.setMessage(message);
     }
 
-    public ResponseEntity<? extends Response<T>> buildResponseEntity
-            (final HttpStatus httpStatus, final String message,
-             final int pageSize, final int numberOfElements,
-             final int totalPages, final int pageNumber, final List<T> payloadPage){
-        setPayloadPage(payloadPage);
-        setHttpStatus(httpStatus.value());
-        setTimestamp(LocalDateTime.now());
-        setMessage(message);
-        setPageSize(pageSize);
-        setNumberOfElements(numberOfElements);
-        setTotalPages(totalPages);
-        setPageNumber(pageNumber);
+    public ResponseEntity<PageableResponse<T>> buildResponseEntity(
+            HttpStatus httpStatus, String message, List<T> payload) {
+        response.setHttpStatus(httpStatus.value());
+        response.setTimestamp(LocalDateTime.now());
+        response.setMessage(message);
+        response.setPayload(payload);
         return new ResponseEntity<>(this, httpStatus);
     }
 }

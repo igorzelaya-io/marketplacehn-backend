@@ -1,14 +1,15 @@
 package com.marketplacehn.entity;
 
-import com.marketplacehn.entity.converter.BidValueJsonConverter;
 import com.marketplacehn.entity.dto.BidValueJson;
 import com.marketplacehn.entity.enums.ItemSellType;
 import com.marketplacehn.entity.enums.ModelStatus;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,9 +35,10 @@ public class Item {
     @Column(name = "item_starting_price", nullable = false)
     private BigDecimal itemStartingPrice;
 
-    @Column(name = "item_current_bid")
+    @Column(name = "item_current_bid", columnDefinition = "jsonb")
     @Setter
-    @Convert(converter = BidValueJsonConverter.class)
+    @Type(JsonType.class)
+    //@Convert(converter = BidValueJsonConverter.class)
     private BidValueJson itemCurrentHighestBid;
 
     @Column(name = "item_post_date", nullable = false)

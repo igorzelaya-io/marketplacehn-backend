@@ -1,11 +1,14 @@
 package com.marketplacehn.controller;
 
 import com.marketplacehn.entity.User;
+import com.marketplacehn.entity.dto.UserDto;
 import com.marketplacehn.response.BaseResponse;
+import com.marketplacehn.response.PageableResponse;
 import com.marketplacehn.response.Response;
 import com.marketplacehn.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -36,6 +41,25 @@ public class UserController {
         BaseResponse<User> response = new BaseResponse<>();
         final User user = userService.findUserById(userId);
         return response.buildResponseEntity(HttpStatus.OK, "User found successfully.", user);
+    }
+
+    @GetMapping(params = {"page", "size"})
+    public ResponseEntity<? extends Response<List<UserDto>>> findPaginatedUsers
+            (@RequestParam(required = false, defaultValue = "0") int page,
+             @RequestParam(required = false, defaultValue = "10") int size,
+             @RequestParam(required = false, defaultValue = "userName, desc") String[] sort){
+
+        final Page<UserDto> usersPage = userService.findPaginatedUsers(page, size, sort);
+
+        BaseResponse<List<UserDto>> delegatedResponse = new BaseResponse<>();
+
+        PageableResponse<UserDto> pageableResponse = new PageableResponse<>(
+                delegatedResponse, size, page, usersPage.getNumberOfElements(), usersPage.getTotalPages()
+        );
+
+        ResponseEntity<? extends Response<List<UserDto>>> response = pageableResponse
+                .buildResponseEntity(HttpStatus.OK, "Users fetched correctly", usersPage.getContent());
+        return response;
     }
 
     @GetMapping
