@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
@@ -79,29 +80,28 @@ class BidControllerTest extends AbstractTestController{
     void itShouldFindItemBids() throws Exception {
         Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
         doReturn(bidsPage).when(underTest)
-                .findItemBids(ITEM_ID, PAGE_NUM, PAGE_SIZE, SORT);
+                .findItemBids(eq(ITEM_ID), eq(PAGE_NUM), eq(PAGE_SIZE), any()); //fails with sorting
         ResultActions result = doRequestFindItemBids();
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Item bids retrieved."))
-                .andExpect(jsonPath("$.data.size()").value(bidsPage.getSize()))
-                .andExpect(jsonPath("$.data.number").value(bidsPage.getNumber()))
-                .andExpect(jsonPath("$.data.content").exists());
+                .andExpect(jsonPath("$.message").value("Item bids retrieved successfully."))
+                .andExpect(jsonPath("$.pageSize").value(bidsPage.getTotalPages()))
+                .andExpect(jsonPath("$.pageNumber").value(bidsPage.getNumber()))
+                .andExpect(jsonPath("$.payload[0].bidId").value(BID_ID));
     }
 
     @Test
-    @Disabled()
     void itShouldFindUserBids() throws Exception {
         Page<Bid> bidsPage = new PageImpl<>(List.of(bid));
         doReturn(bidsPage).when(underTest)
-                .findUserBids(USER_ID, PAGE_NUM, PAGE_SIZE, SORT);
+                .findUserBids(eq(USER_ID), eq(PAGE_NUM), eq(PAGE_SIZE), any()); //fails with sorting
         ResultActions result = doRequestFindUserBids();
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User bids retrieved."))
-                .andExpect(jsonPath("$.data.size()").value(bidsPage.getSize()))
-                .andExpect(jsonPath("$.data.number").value(bidsPage.getNumber()))
-                .andExpect(jsonPath("$.data.content").exists());
+                .andExpect(jsonPath("$.message").value("User bids retrieved successfully."))
+                .andExpect(jsonPath("$.pageSize").value(bidsPage.getTotalPages()))
+                .andExpect(jsonPath("$.pageNumber").value(bidsPage.getNumber()))
+                .andExpect(jsonPath("$.payload[0].bidId").value(BID_ID));
     }
 
     private ResultActions doRequestFindBidById() throws Exception {

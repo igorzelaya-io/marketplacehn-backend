@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -169,7 +170,7 @@ class BidServiceTest {
 
         Assertions.assertEquals(
                 updatedBid.getBidValue(),
-                bid.getBidValue());
+                expectedBid.getBidValue());
     }
 
     @Test
@@ -208,7 +209,7 @@ class BidServiceTest {
         when(itemRepository.findActiveItemById(ITEM_ID))
                 .thenReturn(Optional.of(item));
         when(bidRepository.findByItem_ItemId(eq(ITEM_ID), any()))
-                .thenReturn(fakeBids);
+                .thenReturn(new PageImpl<>(fakeBids));
         when(itemRepository.save(item))
                 .thenReturn(item);
 
@@ -243,12 +244,13 @@ class BidServiceTest {
         List<Bid> fakeBids = createFakeBids();
 
         when(bidRepository.findByItem_ItemId(eq(ITEM_ID), any()))
-                .thenReturn(fakeBids);
+                .thenReturn(new PageImpl<>(fakeBids));
 
         Page<Bid> expectedPage = underTest
                 .findItemBids(ITEM_ID, PAGE_NUM, PAGE_SIZE, SORT);
 
         Assertions.assertEquals(fakeBids.size(), expectedPage.getTotalElements());
+
     }
 
     @Test
@@ -256,7 +258,7 @@ class BidServiceTest {
         List<Bid> fakeBids = createFakeBids();
 
         when(bidRepository.findByItem_ItemId(eq(USER_ID), any()))
-                .thenReturn(fakeBids);
+                .thenReturn(new PageImpl<>(fakeBids));
 
         Page<Bid> expectedPage = underTest
                 .findItemBids(USER_ID, PAGE_NUM, PAGE_SIZE, SORT);

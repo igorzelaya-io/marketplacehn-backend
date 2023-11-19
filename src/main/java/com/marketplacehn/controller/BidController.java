@@ -3,7 +3,8 @@ package com.marketplacehn.controller;
 import com.marketplacehn.entity.Bid;
 import com.marketplacehn.request.BidPostingDto;
 import com.marketplacehn.response.BaseResponse;
-import com.marketplacehn.response.PageableResponse;
+import com.marketplacehn.response.PaginatedBaseResponse;
+import com.marketplacehn.response.PaginatedResponse;
 import com.marketplacehn.response.Response;
 import com.marketplacehn.service.BidService;
 import lombok.NonNull;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Rest Controller for Bid entity.
@@ -65,35 +68,32 @@ public class BidController {
     }
 
     @GetMapping("/items/{itemId}/bids")
-    public ResponseEntity<? extends Response<Bid>> getItemsBids(@PathVariable String itemId,
-                                      @RequestParam(required = false, defaultValue = "0") int page,
-                                      @RequestParam(required = false, defaultValue = "10") int size,
-                                      @RequestParam(required = false, defaultValue = "bidValue,desc") String[] sort){
+    public ResponseEntity<? extends PaginatedResponse<Bid>> getItemsBids(@PathVariable String itemId,
+                                                                               @RequestParam(required = false, defaultValue = "0") int page,
+                                                                               @RequestParam(required = false, defaultValue = "10") int size,
+                                                                               @RequestParam(required = false, defaultValue = "bidValue,desc") String[] sort){
+        Page<Bid> bidsPage = bidService
+            .findItemBids(itemId, page, size, sort);
 
-        PageableResponse<Bid> pageResponse = new PageableResponse<>();
-            Page<Bid> bidsPage = bidService
-                .findItemBids(itemId, page, size, sort);
+        PaginatedResponse<Bid> response = new PaginatedBaseResponse<>();
 
-        return pageResponse
-                .buildResponseEntity
-                        (HttpStatus.OK, "Item bids retrieved.", bidsPage.getSize(), bidsPage.getNumberOfElements(),
-                                bidsPage.getTotalPages(), bidsPage.getNumber(), bidsPage.getContent());
+        return response.buildPaginatedResponseEntity(HttpStatus.OK, "Item bids retrieved successfully.", bidsPage.getContent(),
+                bidsPage.getNumber(), bidsPage.getSize(), bidsPage.getTotalElements(), bidsPage.getTotalPages());
 
     }
 
     @GetMapping("/users/{userId}/bids")
-    public ResponseEntity<? extends Response<Bid>> getUserBids(@PathVariable final String userId,
+    public ResponseEntity<? extends Response<List<Bid>>> getUserBids(@PathVariable final String userId,
                                @RequestParam(required = false, defaultValue = "0") final int page,
                                @RequestParam(required = false, defaultValue = "10") final int size,
                                @RequestParam(required = false, defaultValue = "bidValue,desc") final String[] sort) {
-        PageableResponse<Bid> pageResponse = new PageableResponse<>();
         Page<Bid> bidsPage = bidService
                 .findUserBids(userId, page, size, sort);
 
-        return pageResponse
-                .buildResponseEntity
-                        (HttpStatus.OK, "User bids retrieved.", bidsPage.getSize(), bidsPage.getNumberOfElements(),
-                                bidsPage.getTotalPages(), bidsPage.getNumber(), bidsPage.getContent());
+        PaginatedResponse<Bid> response = new PaginatedBaseResponse<>();
+
+        return response.buildPaginatedResponseEntity(HttpStatus.OK, "User bids retrieved successfully.", bidsPage.getContent(),
+                bidsPage.getNumber(), bidsPage.getSize(), bidsPage.getTotalElements(), bidsPage.getTotalPages());
     }
 
 

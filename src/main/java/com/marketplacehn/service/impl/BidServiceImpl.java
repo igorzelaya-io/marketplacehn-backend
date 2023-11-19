@@ -114,7 +114,7 @@ public class BidServiceImpl implements BidService {
             final int SECOND_HIGHEST_BID_INDEX = 1;
 
             final Bid itemSecondHighestBid = bidRepository.findByItem_ItemId(itemId, pageable)
-                    .get(SECOND_HIGHEST_BID_INDEX);
+                    .toList().get(SECOND_HIGHEST_BID_INDEX);
 
             bidItem.setItemCurrentHighestBid
                     (new BidValueJson
@@ -130,8 +130,7 @@ public class BidServiceImpl implements BidService {
                                   final int size, final String[] sort) {
         final List<Sort.Order> sortOrder = sortingUtils.getSortingOrder(sort);
         final Pageable pageable = PageRequest.of(page, size, Sort.by(sortOrder));
-        final List<Bid> itemBids = bidRepository.findByItem_ItemId(itemId, pageable);
-        return new PageImpl<>(itemBids);
+        return bidRepository.findByItem_ItemId(itemId, pageable);
     }
 
     @Override
@@ -139,8 +138,7 @@ public class BidServiceImpl implements BidService {
                                   final int size, final String[] sort) {
         final List<Sort.Order> sortOrder = sortingUtils.getSortingOrder(sort);
         final Pageable pageable = PageRequest.of(page, size, Sort.by(sortOrder));
-        List<Bid> userBids = bidRepository.findByUserBid_UserId(userId, pageable);
-        return new PageImpl<>(userBids);
+        return bidRepository.findByUserBid_UserId(userId, pageable);
     }
 
     private void validateItemHighestBid(Item item, final Bid incomingBid) {

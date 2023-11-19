@@ -19,5 +19,4 @@ public interface UserRepository extends JpaRepository<User, String> {
                                                @Param("userStatus") int userStatus);
 
     Page<User> findByUserNameContaining(String userName, Pageable pageRequest);
-
 }
