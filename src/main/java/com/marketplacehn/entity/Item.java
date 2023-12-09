@@ -1,28 +1,16 @@
 package com.marketplacehn.entity;
 
-import com.marketplacehn.entity.converter.BidValueJsonConverter;
 import com.marketplacehn.entity.dto.BidValueJson;
 import com.marketplacehn.entity.enums.ItemSellType;
 import com.marketplacehn.entity.enums.ModelStatus;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -47,9 +35,10 @@ public class Item {
     @Column(name = "item_starting_price", nullable = false)
     private BigDecimal itemStartingPrice;
 
-    @Column(name = "item_current_bid")
+    @Column(name = "item_current_bid", columnDefinition = "jsonb")
     @Setter
-    @Convert(converter = BidValueJsonConverter.class)
+    @Type(JsonType.class)
+    //@Convert(converter = BidValueJsonConverter.class)
     private BidValueJson itemCurrentHighestBid;
 
     @Column(name = "item_post_date", nullable = false)
@@ -80,6 +69,11 @@ public class Item {
     )
     @Column(name = "photo_url")
     private Set<String> itemPhotos;
+
+    public Item() {
+        this.itemId = UUID.randomUUID().toString();
+        itemStatus = ModelStatus.ACTIVE;
+    }
 
     /**
      * Prepare Item's fields to persist.

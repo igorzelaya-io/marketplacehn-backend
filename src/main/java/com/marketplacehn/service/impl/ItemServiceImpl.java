@@ -6,9 +6,7 @@ import com.marketplacehn.repository.ItemRepository;
 import com.marketplacehn.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import javax.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
-
+import jakarta.persistence.EntityNotFoundException;
 
 /**
  * Service Implementation for business logic regarding Item entity.

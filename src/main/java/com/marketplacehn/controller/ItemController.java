@@ -41,7 +41,7 @@ public class ItemController {
     public ResponseEntity<? extends Response<Item>> saveItem(@RequestBody(required = true) Item item) {
         BaseResponse<Item> response = new BaseResponse<>();
         Item savedItem = itemService.saveItem(item);
-        return response.buildResponseEntity(HttpStatus.OK, "Item upserted successfully.", savedItem);
+        return response.buildResponseEntity(HttpStatus.CREATED, "Item upserted successfully.", savedItem);
     }
 
     @DeleteMapping("/{itemId}")
