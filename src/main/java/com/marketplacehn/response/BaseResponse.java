@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @JsonSerialize
 @NoArgsConstructor
@@ -20,8 +21,6 @@ public class BaseResponse<T> implements Response<T> {
 
     @JsonProperty
     private LocalDateTime timestamp;
-
-
     @Override
     public T getPayload() {
         return payload;

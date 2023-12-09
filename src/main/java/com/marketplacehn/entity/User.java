@@ -19,6 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "users", schema = "marketplace")
 @Getter
+@Setter
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class User {
@@ -52,6 +53,11 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     @Setter
     private ModelStatus userStatus;
+
+    public User() {
+        this.userId = UUID.randomUUID().toString();
+        userStatus = ModelStatus.ACTIVE;
+    }
 
     /**
      * Prepare incoming dto to persist in DB.

@@ -3,17 +3,18 @@ package com.marketplacehn.utils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class SortingUtils {
 
-    private List<Sort.Order> sortingParams;
+    private List<Sort.Order> sortingParams = new ArrayList<>();
 
     //sortingArgs = {"field, direction", "field, direction"}
     public List<Sort.Order> getSortingOrder(final String[] sortingArgs){
 
-        if(sortingArgs.length > 1){
+        if(sortingArgs.length > 2){
             for(final String sortOrder : sortingArgs){
                 final String[] sortIndividualArgs = sortOrder.split(",");
                 final String direction = sortIndividualArgs[0];
